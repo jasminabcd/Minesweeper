@@ -3,7 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Minesweeper", "Minesweeper\Minesweeper.csproj", "{A0A21138-DA1B-4C70-B390-D3D757638372}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Minesweeper", "Minesweeper\Minesweeper.csproj", "{A0A21138-DA1B-4C70-B390-D3D757638372}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projektmappenelemente", "Projektmappenelemente", "{F038B057-2326-4B96-B304-8B8A3DB56B2C}"
+	ProjectSection(SolutionItems) = preProject
+		GameOverMinesweeper.txt = GameOverMinesweeper.txt
+		SieHabenGewonnenMinesweeper.txt = SieHabenGewonnenMinesweeper.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
