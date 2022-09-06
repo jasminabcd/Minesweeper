@@ -15,6 +15,11 @@
             
         }
 
+        //public Home()
+        //{
+            
+        //}
+
         public bool IsGameover { get; set; }
         
 

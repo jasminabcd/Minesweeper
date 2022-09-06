@@ -12,9 +12,21 @@ namespace Minesweeper
             Console.Write("   ");
             foreach (var value in field)
             {
-                var colInfo = " " + cols + "  ";
-                Console.Write(colInfo);
-                cols++;
+                if (cols < 10 || cols == 1)
+                {
+                    var colInfoWithNull =(" " + "0" + cols + " ");
+                    Console.Write(colInfoWithNull);
+                    cols++;
+                }
+                else
+                {
+                    var colInfo = " " + cols + " ";
+                    Console.Write(colInfo);
+                    cols++;
+                }
+                
+
+                
             }
             Console.WriteLine();
             var msg = "  " + string.Join("", Enumerable.Repeat('-', 4 * field[0].Length + 1));
@@ -34,7 +46,7 @@ namespace Minesweeper
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.Write(" ");
                 }
-                Console.Write("|");
+                Console.Write(" |");
                 Console.WriteLine();
 
             }

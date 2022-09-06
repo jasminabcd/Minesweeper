@@ -2,7 +2,7 @@
 {
     public class Field
     {
-        public Field(bool isBomb, int bombsAroundMe,Field? top, Field? left, Field? leftBottom, Field? leftTop)
+        public Field(bool isBomb, int bombsAroundMe, Field? top, Field? left, Field? leftBottom, Field? leftTop)
         {
             IsDiscovered = false;
             IsBomb = isBomb;
@@ -117,8 +117,28 @@
                     Console.ForegroundColor = ConsoleColor.Green;
                     break;
                 case "2":
-                    Console.ForegroundColor = ConsoleColor.DarkCyan;
+                    Console.ForegroundColor = ConsoleColor.DarkGreen;
                     break;
+                case "3":
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    break;
+                case "4":
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    break;
+                case "5":
+                    Console.ForegroundColor = ConsoleColor.Magenta;
+                    break;
+                case "6":
+                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                    break;
+                case "7":
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    break;
+                case "8":
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    break;
+
+
             }
 
 

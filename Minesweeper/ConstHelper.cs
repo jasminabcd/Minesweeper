@@ -2,7 +2,8 @@
 {
     public static class ConstHelper
     {
-        public const int SideLength = 50;
+        //public int SideLength { get; set; }
+        public static int SideLength = 15;
         public const double BombChance = 0.16;
 
     }
