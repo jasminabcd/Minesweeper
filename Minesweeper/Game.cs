@@ -26,7 +26,9 @@
 
         public void PrintGame()
         {
+            Console.Clear();
             _grid.PrintGrid();
+           
         }
 
         public void DiscoverField()

@@ -3,7 +3,6 @@
 while(true)
 {
 
-
     Game game = null;
 
     do
@@ -13,33 +12,12 @@ while(true)
         Console.WriteLine(WelcomeArt);
         Console.ForegroundColor = ConsoleColor.White;
 
-
         Console.WriteLine("1. Neues Spiel starten");
         Console.WriteLine("2. Weiter spielen");
         Console.WriteLine("3. Exit");
 
         Console.WriteLine("Wähle aus (1, 2 oder 3):");
-
-        string userInput = Console.ReadLine();
-        int userInputInt;
-
-
-        bool success = int.TryParse(userInput, out userInputInt);
-
-        if (!success)
-        {
-            Console.WriteLine("Der von Ihnen eingegebene Wert ist eine ungültige Zahl. Geben Sie eine Zahl von 1-3 ein:");
-            continue;
-        }
-
-        if (userInputInt > 3 || userInputInt < 1)
-        {
-            Console.WriteLine("Bitte geben Sie eine Zahl von 1-3 ein:");
-        
-           continue;
-       }
-
-
+        var userInputInt = ConsoleHelper.UserInput();
 
         switch (userInputInt)
         {
@@ -47,26 +25,9 @@ while(true)
 
                 Console.WriteLine("Wählen Sie eine Schwierigkeitsstufe:");
                 Console.WriteLine(" Leicht(1) / Mittel(2) / Schwer(3):");
+                var difficulty = ConsoleHelper.UserInput();
 
-                string userChoice = Console.ReadLine();
-                int userChoiceInt;
-
-
-                bool successed = int.TryParse(userChoice, out userChoiceInt);
-
-                if (!successed)
-                {
-                    Console.WriteLine("Der von Ihnen eingegebene Wert ist eine ungültige Zahl. Geben Sie eine Zahl von 1-3 ein:");
-                    continue;
-                }
-
-                if (userInputInt > 3 || userInputInt < 1)
-                {
-                    Console.WriteLine("Bitte geben Sie eine Zahl von 1-3 ein:");
-
-                    continue;
-                }
-                switch (userChoiceInt)
+                switch (difficulty)
                 {
                     case 1:
 
@@ -84,7 +45,6 @@ while(true)
                 }
 
                 game = new Game(ConstHelper.SideLength);
-
                 break;
 
             case 2:
@@ -93,8 +53,7 @@ while(true)
                 break;
 
             case 3:
-
-                System.Environment.Exit(0);
+                Environment.Exit(0);
                 break;
         }
     }
@@ -112,31 +71,13 @@ while(true)
         Console.WriteLine("1. Feld aufdecken");
         Console.WriteLine("2. Flage setzen");
         Console.WriteLine("3. Flage entfernen");
+        var activity = ConsoleHelper.UserInput();
 
-        auswahl = Console.ReadLine();
-        int auswahlInt;
-
-
-        bool success = int.TryParse(auswahl, out auswahlInt);
-
-        if (!success)
-        {
-            Console.WriteLine("Der von Ihnen eingegebene Wert ist eine ungültige Zahl. Geben Sie eine Zahl von 1-3 ein:");
-            continue;
-        }
-     
-        if (auswahlInt > 3 || auswahlInt < 1)
-        {
-            Console.WriteLine("Der von Ihnen eingegebene Wert ist ungueltig. Wähle neu:");
-            continue;
-        }
-
-
-
-        switch (auswahlInt)
+        switch (activity)
         {
             case 1:
                 game.DiscoverField();
+
                 break;
 
             case 2:
@@ -151,6 +92,8 @@ while(true)
 
         var duration = DateTime.Now - startTime;
         Console.WriteLine(duration);
+
+        
     }
 
     if (game.IsGameover)
@@ -170,6 +113,4 @@ while(true)
         Console.WriteLine(gameOverArt);
         Console.ForegroundColor = ConsoleColor.White;
     }
-
-
 }
