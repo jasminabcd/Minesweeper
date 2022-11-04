@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using ConsoleTables;
+using Personen;
+using System.Text.RegularExpressions;
 
 namespace Minesweeper
 {
@@ -15,7 +17,7 @@ namespace Minesweeper
             {
                 if (cols < 10 || cols == 1)
                 {
-                    var colInfoWithNull =(" " + "0" + cols + " ");
+                    var colInfoWithNull = (" " + "0" + cols + " ");
                     Console.Write(colInfoWithNull);
                     cols++;
                 }
@@ -35,6 +37,7 @@ namespace Minesweeper
             var lineName = 'A';
             foreach (var line in field)
             {
+
                 Console.Write(lineName + " ");
                 lineName++;
                 foreach (var value in line)
@@ -51,13 +54,48 @@ namespace Minesweeper
             }
         }
 
-        public static int UserInput()
+        public static int UserInput(int min, int max)
+        {            
+            while (true)
+            {
+                string userChoice = Console.ReadLine();
+                int userChoiceInt;
+
+                bool successed = int.TryParse(userChoice, out userChoiceInt);
+
+                if (!successed)
+                {
+                    Console.WriteLine("Der von Ihnen eingegebene Wert ist eine ungültige Zahl. Geben Sie eine Zahl von " + min +  "-" + max + " ein:");
+                    continue;
+                }
+
+                if (userChoiceInt > max || userChoiceInt < min)
+                {
+                    Console.WriteLine("Bitte geben Sie eine Zahl von" + min + "-" + max + "ein:");
+                    continue;
+                }
+
+                return userChoiceInt;
+            }
+        }
+
+
+        public static string PlayerName()
+        {
+            string x = Console.ReadLine();
+            return x;
+        }
+
+        public static string DifficultyInput()
         {
             while (true)
             {
                 string userChoice = Console.ReadLine();
                 int userChoiceInt;
 
+                
+                
+                
                 bool successed = int.TryParse(userChoice, out userChoiceInt);
 
                 if (!successed)
@@ -71,12 +109,56 @@ namespace Minesweeper
                     Console.WriteLine("Bitte geben Sie eine Zahl von 1-3 ein:");
                     continue;
                 }
-                
-                return userChoiceInt;
+
+                switch (userChoiceInt)
+                {
+                    case 1:
+                        return "Leicht";
+                    case 2:
+                        return "Mittel";
+                    case 3:
+                        return "Schwer";
+                }
             }
         }
-            
 
+        public static void WelcomPrint()
+        {
+            var WelcomeArt = File.ReadAllText("Welcome.txt");
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine(WelcomeArt);
+            Console.ForegroundColor = ConsoleColor.White;
+        }
+
+      public static void StartMenue()
+        {
+            Console.WriteLine("1. Neues Spiel starten");
+            Console.WriteLine("2. Weiter spielen");
+            Console.WriteLine("3. Highscore ausgeben");
+            Console.WriteLine("4. Exit");
+
+            Console.WriteLine("Wähle aus (1, 2, 3 oder 4):");
+        }
+
+      
+
+        public static void IfGameIsOver()
+        {
+            Console.WriteLine("Sie haben verloren :(");
+            var gameOverArt = File.ReadAllText("GameOver.txt");
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine(gameOverArt);
+            Console.ForegroundColor = ConsoleColor.White;
+        }
+
+        public static void IfGameIsWon()
+        {
+            Console.WriteLine("Sie haben gewonnen! :)");
+            var gameOverArt = File.ReadAllText("SieHabenGewonnen.txt");
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine(gameOverArt);
+            Console.ForegroundColor = ConsoleColor.White;
+        }
         public static int ReadNumber()
         {
             int value = 0;
@@ -84,19 +166,38 @@ namespace Minesweeper
             do
             {
                 input = Console.ReadLine();
-                if(input == null)
+                if (input == null)
                 {
                     Console.WriteLine("Bitte geben Sie etwas ein:");
-                   continue;
+                    continue;
                 }
             } while (!int.TryParse(input, out value));
 
             return value;
         }
 
+       
+        public static void PrintHighscore()
+        {
+            Console.WriteLine("Select Dificulty");
+            string difficulty = DifficultyInput();
+            var helper = new SqlHelper(ConstHelper.connectionString);
+            var higscoreList = helper.GetHighscores(difficulty);
+            Console.WriteLine(difficulty);
+            //SqlHelper.ExecuteReader(sql, highscoreList);
+            var table = new ConsoleTable("Zeit", "SpielerName", "Datum");
+            foreach (var highscore in higscoreList)
+            {
 
+                table.AddRow(TimeSpan.FromSeconds(highscore.Duration), highscore.PlayerName, highscore.PlayDate);
 
-        public static Coordinate ReadCoordinates()
+                //  higscore.
+                //Console.WriteLine(higscore);            
+                table.Write();
+            }
+        }
+
+        public static Coordinate ReadCoordinates(int sideLength)
         {
             var formatRegex = new Regex("^(([A-Z][1-9][0-9]?)|([1-9][0-9]?[A-Z]))$");
             var numberRegex = new Regex("[0-9]+");
@@ -119,8 +220,6 @@ namespace Minesweeper
 
                 var numberMatch = numberRegex.Match(input);
                 var numberValue = int.Parse(numberMatch.Value);
-
-                var sideLength = ConstHelper.SideLength;
 
                 if (numberValue > sideLength || numberValue < 0)
                 {
@@ -145,6 +244,6 @@ namespace Minesweeper
             return validCoordinates!;
         }
 
-        
+
     }
-}
+} 

@@ -1,69 +1,67 @@
-﻿using Minesweeper;
+﻿using efCoreTest;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+using Minesweeper;
+using Minesweeper.Persistence;
+using Personen;
 
-while(true)
+string difficultyText = string.Empty;
+using (var context = new MinesweeperContext())
+{
+    context.Database.Migrate();
+}
+
+while (true)
 {
 
     Game game = null;
-
     do
     {
-        var WelcomeArt = File.ReadAllText("Welcome.txt");
-        Console.ForegroundColor = ConsoleColor.Magenta;
-        Console.WriteLine(WelcomeArt);
-        Console.ForegroundColor = ConsoleColor.White;
+       
+        ConsoleHelper.WelcomPrint();
 
-        Console.WriteLine("1. Neues Spiel starten");
-        Console.WriteLine("2. Weiter spielen");
-        Console.WriteLine("3. Exit");
 
-        Console.WriteLine("Wähle aus (1, 2 oder 3):");
-        var userInputInt = ConsoleHelper.UserInput();
+
+        ConsoleHelper.StartMenue();
+
+        var userInputInt = ConsoleHelper.UserInput(1, 4);
 
         switch (userInputInt)
         {
             case 1:
 
+                Console.WriteLine("Geben Sie einen Spielernamen ein:");
+                string playerName = ConsoleHelper.PlayerName();
                 Console.WriteLine("Wählen Sie eine Schwierigkeitsstufe:");
-                Console.WriteLine(" Leicht(1) / Mittel(2) / Schwer(3):");
-                var difficulty = ConsoleHelper.UserInput();
+                Console.WriteLine("Leicht(1) / Mittel(2) / Schwer(3):");
+                var difficulty = ConsoleHelper.DifficultyInput();
+                game = new Game(difficulty, playerName);
 
-                switch (difficulty)
-                {
-                    case 1:
-
-                        ConstHelper.SideLength = 4;
-                        // SideLength = 4
-                        break;
-                    case 2:
-                        ConstHelper.SideLength = 8;
-                        // SideLength = 8
-                        break;
-                    case 3:
-                        ConstHelper.SideLength = 12;
-                        // SideLength = 12
-                        break;
-                }
-
-                game = new Game(ConstHelper.SideLength);
                 break;
 
             case 2:
+                game = LoadGame();
+                
+                //PersistenceService.LoadChoosenGame();
 
-                // Spielstand speichern und wieder aufrufen
                 break;
 
             case 3:
+                ConsoleHelper.PrintHighscore();
+                break;
+            case 4:
                 Environment.Exit(0);
+                
+
                 break;
         }
     }
     while (game == null);
 
+    game.Start();
     game.PrintGame();
 
-    string auswahl;
 
-    var startTime = DateTime.Now;
 
     while (!game.IsGameover && !game.IsWon())
     {
@@ -71,13 +69,14 @@ while(true)
         Console.WriteLine("1. Feld aufdecken");
         Console.WriteLine("2. Flage setzen");
         Console.WriteLine("3. Flage entfernen");
-        var activity = ConsoleHelper.UserInput();
+        Console.WriteLine("4. Spiel abbrechen und Speichern");
+        var activity = ConsoleHelper.UserInput(1, 4);
+
 
         switch (activity)
         {
             case 1:
                 game.DiscoverField();
-
                 break;
 
             case 2:
@@ -87,30 +86,61 @@ while(true)
             case 3:
                 game.RemoveFlag();
                 break;
+                
+            case 4:
+                
+                new PersistenceService().SaveOrUpdateGame(game);
+                ConsoleHelper.StartMenue();
+                return;
+               
+
 
         }
 
-        var duration = DateTime.Now - startTime;
-        Console.WriteLine(duration);
-
+        Console.WriteLine(game.GetDuration());
         
     }
+    var duration = game.GetDuration();
 
     if (game.IsGameover)
     {
-        Console.WriteLine("Sie haben verloren :(");
-        var gameOverArt = File.ReadAllText("GameOver.txt");
-        Console.ForegroundColor = ConsoleColor.Magenta;
-        Console.WriteLine(gameOverArt);
-        Console.ForegroundColor = ConsoleColor.White;
+
+        ConsoleHelper.IfGameIsOver();
     }
 
     if (game.IsWon())
     {
-        Console.WriteLine("Sie haben gewonnen! :)");
-        var gameOverArt = File.ReadAllText("SieHabenGewonnen.txt");
-        Console.ForegroundColor = ConsoleColor.Magenta;
-        Console.WriteLine(gameOverArt);
-        Console.ForegroundColor = ConsoleColor.White;
+
+        ConsoleHelper.IfGameIsWon();
+
+
+        Console.Write("Tippen Sie einen Spielernamen ein:");
+        string playerName;
+        playerName = ConsoleHelper.PlayerName();
+
+        var sqlHelper = new SqlHelper(ConstHelper.connectionString);
+
+        sqlHelper.AddHighscore(duration.Seconds, playerName, DateTime.Now, difficultyText);
     }
+}
+
+Game LoadGame()
+{
+    Console.Clear();
+    var persistanceService = new PersistenceService();
+
+    var games = persistanceService.LoadGames();
+
+    var cnt = 0;
+    Console.WriteLine("Number\tName\tDate");
+    foreach (var game in games)
+    {
+        Console.WriteLine($"{++cnt}.\t{game.PlayerName}\t{game.LastPlayedOn:dd.MM.yyyy hh:mm}");
+    }
+
+    Console.ReadKey();
+
+    var id = games[3].ID;
+
+    return persistanceService.RestoreGame(id);
 }

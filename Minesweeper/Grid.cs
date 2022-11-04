@@ -1,4 +1,5 @@
-﻿using Minesweeper;
+﻿using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+using Minesweeper;
 
 public class Grid
 {
@@ -7,18 +8,44 @@ public class Grid
     private List<Coordinate> _bombList;
     public int TotalFields { get; }
     public int TotalBombs { get; }
-    private int _discoveredFieldCount = 0;
+    public int SideLength { get; set; }
 
+    private int _discoveredFieldCount = 0;
     private int _flagFieldCount = 0;
 
+    public Grid(ICollection<PersistenceField> persistenceFields)
+    {
+        var ordered = persistenceFields.OrderBy(f => f.Position)
+            .ToList();
+        SideLength = (int)Math.Sqrt(persistenceFields.Count);
+        TotalFields = persistenceFields.Count;
+        TotalBombs = (int)(persistenceFields.Count * 0.16);
+
+        _playingField = new Field[SideLength][];
+        for(int i = 0; i < SideLength; i++)
+        {
+            _playingField[i] = new Field[SideLength];
+        
+        for(var j = 0; j < SideLength; j++)
+            {
+                var persistenceField = ordered[i * SideLength + j];
+                Field field = new Field(persistenceField);
+                _playingField[i][j] = field;
+
+                // create new field from persitence one
+                //var field = new Field(persitenceField.IsBomb, persitenceField.BombsAroundMe);
+                //_playingField[i][j] = field;
+            }
+        }
+    }
 
     public Grid(int sideLength)
     {
+        SideLength = sideLength;
         _bombList = new List<Coordinate>();
         TotalFields = sideLength * sideLength;
         TotalBombs = (int)Math.Round(TotalFields * ConstHelper.BombChance, 0);
 
-        var bombList = new List<(int, int)>();
 
         do
         {
@@ -47,8 +74,6 @@ public class Grid
             {
                 int bombsAroundMe = 0;
                 var isBomb = false;
-                var IsDiscovered = true;
-
 
                 if (_bombList.Contains(new Coordinate(x, y)))
                 {
@@ -110,23 +135,9 @@ public class Grid
                     }
                 }
 
-                Field topField = null;
-                Field bottomField = null;
-                Field leftField = null;
-                Field rightField = null;
+               
 
-
-
-                Field leftBottomField = null;
-                Field leftTopField = null;
-
-                if (y > 0)
-                {
-                    topField = field[y - 1][x];
-                }
-
-                
-                field[y][x] = new Field(isBomb, bombsAroundMe, topField, leftField, leftBottomField, leftTopField);
+                field[y][x] = new Field(isBomb, bombsAroundMe);
 
             }
 
@@ -134,12 +145,6 @@ public class Grid
 
         _playingField = field;
 
-        var pointer = field[0][0];
-        while (pointer != null)
-        {
-
-            pointer = pointer.Bottom;
-        }
     }
 
 
@@ -156,7 +161,7 @@ public class Grid
     public Field GetField(Coordinate coordinate)
     {
 
-        
+
         var row = _playingField[coordinate.Y - 1];
         var field = row[coordinate.X - 1];
 
@@ -178,7 +183,7 @@ public class Grid
                 return true;
             }
         }
-       
+
 
         if (userField.BombsAroundMe > 0 || userField.IsBomb)
         {
@@ -198,18 +203,18 @@ public class Grid
             DiscoverFieldAndCheckGameOver(leftField);
         }
 
-        var leftTopField = new Coordinate(coordinate.X - 1, coordinate.Y -1);
+        var leftTopField = new Coordinate(coordinate.X - 1, coordinate.Y - 1);
         if (IsCoordinatesInGrid(leftTopField))
         {
             DiscoverFieldAndCheckGameOver(leftTopField);
         }
 
-        var rightTopField = new Coordinate(coordinate.X + 1, coordinate.Y -1);
+        var rightTopField = new Coordinate(coordinate.X + 1, coordinate.Y - 1);
         if (IsCoordinatesInGrid(rightTopField))
         {
             DiscoverFieldAndCheckGameOver(rightTopField);
         }
-        var topField = new Coordinate(coordinate.X, coordinate.Y -1);
+        var topField = new Coordinate(coordinate.X, coordinate.Y - 1);
         if (IsCoordinatesInGrid(topField))
         {
             DiscoverFieldAndCheckGameOver(topField);
@@ -237,11 +242,6 @@ public class Grid
 
     }
 
-    public void NotDiscoverField(Coordinate coordinate)
-    {
-        var userField = GetField(coordinate);
-        userField.NotDiscovered();
-    }
 
 
     public void FlagField(Coordinate coordinate)
@@ -264,16 +264,14 @@ public class Grid
     }
 
     public bool IsCoordinatesInGrid(Coordinate coordinates)
-    
     {
-        var sideLength = ConstHelper.SideLength;
 
-        if (coordinates.X > sideLength || coordinates.X <= 0)
+        if (coordinates.X > SideLength || coordinates.X <= 0)
         {
             return false;
         }
 
-        if (coordinates.Y > sideLength || coordinates.Y <= 0)
+        if (coordinates.Y > SideLength || coordinates.Y <= 0)
         {
             return false;
         }
@@ -281,6 +279,27 @@ public class Grid
         return true;
     }
 
+    internal ICollection<PersistenceField> GetPersistenceField()
 
+    {
+        var fields = new List<PersistenceField>();
+        
+        for (int i = 0; i < _playingField.Length * _playingField.Length; i++)
+        {
+            int row = i / _playingField.Length;
+            int col = i % _playingField.Length;
+            var field = _playingField[row][col];
+            var persistenceField = field.ToPersistenceField(i);
+      
+            fields.Add(persistenceField);
+
+        }
+        return fields;
+    }
+
+    internal static Grid FromFields(ICollection<PersistenceField> fields)
+    {
+        return new Grid(fields);
+     }
 }
 

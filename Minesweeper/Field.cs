@@ -2,73 +2,31 @@
 {
     public class Field
     {
-        public Field(bool isBomb, int bombsAroundMe, Field? top, Field? left, Field? leftBottom, Field? leftTop)
+
+        public Field(PersistenceField persistenceField)
+        {
+            IsDiscovered = persistenceField.IsDiscovered;
+            IsBomb = persistenceField.IsBomb;
+            IsFlag = persistenceField.IsFlag;
+            BombsAroundMe = persistenceField.BombsAroundMe;
+            IsFlag = false;
+        }
+        public Field(bool isBomb, int bombsAroundMe)
         {
             IsDiscovered = false;
             IsBomb = isBomb;
             BombsAroundMe = bombsAroundMe;
-            Top = top;
-            Left = left;
-            LeftBottom = leftBottom;
-            LeftTop = leftTop;
-            top?.SetButtom(this);
-            top?.SetRight(this);
-            top?.SetRightTop(this);
-            top?.SetRightBottom(this);
         }
-
-        public Field? Top { get; }
-        public Field? Bottom { get; private set; }
-        public Field? Left { get; }
-        public Field? LeftBottom { get; }
-        public Field? LeftTop { get; }
-        public Field? Right { get; private set; }
-        public Field? RightTop { get; private set; }
-        public Field? RightBottom { get; private set; }
 
         public bool IsBomb { get; }
         public int BombsAroundMe { get; }
         public bool IsDiscovered { get; private set; }
-        public bool IsGameOver { get; private set; }
         public bool IsFlag { get; set; }
 
 
-        private void SetButtom(Field buttomField)
-        {
-            Bottom = buttomField;
-        }
-
-        private void SetRight(Field rightField)
-        {
-            Right = rightField;
-        }
-
-        private void SetRightTop(Field rightTopField)
-        {
-            RightTop = rightTopField;
-        }
-
-        private void SetRightBottom(Field rightBottomField)
-        {
-            RightBottom = rightBottomField;
-        }
-
         public void Discover()
         {
-            if (!IsDiscovered)
-            {
-                IsDiscovered = true;
-            }
-
-            if (IsBomb)
-            {
-                IsGameOver = true;
-            };
-        }
-
-        public void NotDiscovered()
-        {
-            IsDiscovered = false;
+            IsDiscovered = true;
         }
 
         public void Flag()
@@ -146,5 +104,23 @@
 
 
         }
+
+        public PersistenceField ToPersistenceField(int position)
+        {
+
+            var field = new PersistenceField()
+            {
+                IsDiscovered = IsDiscovered,
+                IsBomb = IsBomb,
+                IsFlag = IsFlag,
+                BombsAroundMe= BombsAroundMe,
+                Position = position,
+            };
+
+            return field;
+        }
+
+
+  
     }
 }
