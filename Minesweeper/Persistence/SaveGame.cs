@@ -35,8 +35,6 @@ public class PersistenceField
     public int BombsAroundMe { get; set; }
     public int Position { get; set; }
 
-    
-
 }
 
 
@@ -45,9 +43,7 @@ public class PersistenceGrid
 
     public Field Field { get; set; }
 
-    private int _persistenceDiscoveredFieldCount = 0;
-    private int _persistenceFlagFieldCount = 0;
-
-
+    //private int _persistenceDiscoveredFieldCount = 0;
+    //private int _persistenceFlagFieldCount = 0;
 
 }

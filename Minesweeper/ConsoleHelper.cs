@@ -6,7 +6,6 @@ namespace Minesweeper
 {
     internal class ConsoleHelper
     {
-
         public static void PrintGame(Field[][] field)
         {
             Console.Clear();
@@ -53,9 +52,8 @@ namespace Minesweeper
 
             }
         }
-
         public static int UserInput(int min, int max)
-        {            
+        {
             while (true)
             {
                 string userChoice = Console.ReadLine();
@@ -65,7 +63,7 @@ namespace Minesweeper
 
                 if (!successed)
                 {
-                    Console.WriteLine("Der von Ihnen eingegebene Wert ist eine ungültige Zahl. Geben Sie eine Zahl von " + min +  "-" + max + " ein:");
+                    Console.WriteLine("Der von Ihnen eingegebene Wert ist eine ungültige Zahl. Geben Sie eine Zahl von " + min + "-" + max + " ein:");
                     continue;
                 }
 
@@ -78,7 +76,6 @@ namespace Minesweeper
                 return userChoiceInt;
             }
         }
-
 
         public static string PlayerName()
         {
@@ -93,9 +90,6 @@ namespace Minesweeper
                 string userChoice = Console.ReadLine();
                 int userChoiceInt;
 
-                
-                
-                
                 bool successed = int.TryParse(userChoice, out userChoiceInt);
 
                 if (!successed)
@@ -130,7 +124,7 @@ namespace Minesweeper
             Console.ForegroundColor = ConsoleColor.White;
         }
 
-      public static void StartMenue()
+        public static void StartMenue()
         {
             Console.WriteLine("1. Neues Spiel starten");
             Console.WriteLine("2. Weiter spielen");
@@ -138,10 +132,8 @@ namespace Minesweeper
             Console.WriteLine("4. Exit");
 
             Console.WriteLine("Wähle aus (1, 2, 3 oder 4):");
+
         }
-
-      
-
         public static void IfGameIsOver()
         {
             Console.WriteLine("Sie haben verloren :(");
@@ -150,7 +142,6 @@ namespace Minesweeper
             Console.WriteLine(gameOverArt);
             Console.ForegroundColor = ConsoleColor.White;
         }
-
         public static void IfGameIsWon()
         {
             Console.WriteLine("Sie haben gewonnen! :)");
@@ -175,8 +166,6 @@ namespace Minesweeper
 
             return value;
         }
-
-       
         public static void PrintHighscore()
         {
             Console.WriteLine("Select Dificulty");
@@ -184,19 +173,15 @@ namespace Minesweeper
             var helper = new SqlHelper(ConstHelper.connectionString);
             var higscoreList = helper.GetHighscores(difficulty);
             Console.WriteLine(difficulty);
-            //SqlHelper.ExecuteReader(sql, highscoreList);
             var table = new ConsoleTable("Zeit", "SpielerName", "Datum");
             foreach (var highscore in higscoreList)
             {
 
                 table.AddRow(TimeSpan.FromSeconds(highscore.Duration), highscore.PlayerName, highscore.PlayDate);
 
-                //  higscore.
-                //Console.WriteLine(higscore);            
                 table.Write();
             }
         }
-
         public static Coordinate ReadCoordinates(int sideLength)
         {
             var formatRegex = new Regex("^(([A-Z][1-9][0-9]?)|([1-9][0-9]?[A-Z]))$");
@@ -246,4 +231,4 @@ namespace Minesweeper
 
 
     }
-} 
+}

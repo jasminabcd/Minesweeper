@@ -1,7 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
-using Microsoft.VisualBasic;
 using Minesweeper;
-using System.Collections.Generic;
 
 namespace Personen
 {
@@ -52,9 +50,7 @@ namespace Personen
                 PlayDate = playDate;
                 Difficulty = difficulty;
 
-
             }
-
 
             public int Duration { get; set; }
             public string PlayerName { get; set; }
@@ -67,8 +63,9 @@ namespace Personen
                 return $"{Duration} {PlayerName} {PlayDate}";
             }
 
-
         }
+
+        
         public List<Score> GetHighscores(string difficulty)
         {
             var sql = "SELECT Id, Duration, PlayerName, PlayDate, Difficulty FROM Highscore  WHERE Difficulty = @p1 ORDER BY Duration ASC";
@@ -104,10 +101,6 @@ namespace Personen
 
             return HighscoreList;
         }
-
-
-
-
 
         public void AddHighscore(int duration, string playerName, DateTime playDate, string difficulty)
         {
@@ -145,5 +138,3 @@ namespace Personen
         }
     }
 }
-
-

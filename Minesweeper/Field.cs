@@ -2,7 +2,7 @@
 {
     public class Field
     {
-
+        private readonly int _id;
         public Field(PersistenceField persistenceField)
         {
             IsDiscovered = persistenceField.IsDiscovered;
@@ -10,12 +10,15 @@
             IsFlag = persistenceField.IsFlag;
             BombsAroundMe = persistenceField.BombsAroundMe;
             IsFlag = false;
+            _id = persistenceField.ID;
+
         }
         public Field(bool isBomb, int bombsAroundMe)
         {
             IsDiscovered = false;
             IsBomb = isBomb;
             BombsAroundMe = bombsAroundMe;
+            _id = 0;
         }
 
         public bool IsBomb { get; }
@@ -113,8 +116,9 @@
                 IsDiscovered = IsDiscovered,
                 IsBomb = IsBomb,
                 IsFlag = IsFlag,
-                BombsAroundMe= BombsAroundMe,
+                BombsAroundMe = BombsAroundMe,
                 Position = position,
+                ID = _id
             };
 
             return field;

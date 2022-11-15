@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
-using Minesweeper;
+﻿using Minesweeper;
 
 public class Grid
 {
@@ -22,19 +21,16 @@ public class Grid
         TotalBombs = (int)(persistenceFields.Count * 0.16);
 
         _playingField = new Field[SideLength][];
-        for(int i = 0; i < SideLength; i++)
+        for (int i = 0; i < SideLength; i++)
         {
             _playingField[i] = new Field[SideLength];
-        
-        for(var j = 0; j < SideLength; j++)
+
+            for (var j = 0; j < SideLength; j++)
             {
                 var persistenceField = ordered[i * SideLength + j];
                 Field field = new Field(persistenceField);
                 _playingField[i][j] = field;
 
-                // create new field from persitence one
-                //var field = new Field(persitenceField.IsBomb, persitenceField.BombsAroundMe);
-                //_playingField[i][j] = field;
             }
         }
     }
@@ -45,7 +41,6 @@ public class Grid
         _bombList = new List<Coordinate>();
         TotalFields = sideLength * sideLength;
         TotalBombs = (int)Math.Round(TotalFields * ConstHelper.BombChance, 0);
-
 
         do
         {
@@ -79,11 +74,10 @@ public class Grid
                 {
 
                     isBomb = true;
-
                 }
+
                 else
                 {
-
 
                     var fieldRight = new Coordinate(x + 1, y);//Rechts
                     var fieldLeft = new Coordinate(x - 1, y);//Links
@@ -135,8 +129,6 @@ public class Grid
                     }
                 }
 
-               
-
                 field[y][x] = new Field(isBomb, bombsAroundMe);
 
             }
@@ -147,17 +139,11 @@ public class Grid
 
     }
 
-
     internal void PrintGrid()
     {
         ConsoleHelper.PrintGame(_playingField);
     }
 
-    /// <summary>
-    /// Hallo Welt
-    /// </summary>
-    /// <param name="coordinate">Eine Koordinate</param>
-    /// <returns>Ein Feld</returns>
     public Field GetField(Coordinate coordinate)
     {
 
@@ -184,12 +170,10 @@ public class Grid
             }
         }
 
-
         if (userField.BombsAroundMe > 0 || userField.IsBomb)
         {
             return false;
         }
-
 
         var rightField = new Coordinate(coordinate.X + 1, coordinate.Y);
         if (IsCoordinatesInGrid(rightField))
@@ -239,10 +223,7 @@ public class Grid
 
         return false;
 
-
     }
-
-
 
     public void FlagField(Coordinate coordinate)
     {
@@ -283,14 +264,14 @@ public class Grid
 
     {
         var fields = new List<PersistenceField>();
-        
+
         for (int i = 0; i < _playingField.Length * _playingField.Length; i++)
         {
             int row = i / _playingField.Length;
             int col = i % _playingField.Length;
             var field = _playingField[row][col];
             var persistenceField = field.ToPersistenceField(i);
-      
+
             fields.Add(persistenceField);
 
         }
@@ -300,6 +281,6 @@ public class Grid
     internal static Grid FromFields(ICollection<PersistenceField> fields)
     {
         return new Grid(fields);
-     }
+    }
 }
 

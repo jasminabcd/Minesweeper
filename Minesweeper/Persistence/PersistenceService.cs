@@ -6,27 +6,48 @@ namespace Minesweeper.Persistence
 {
     internal class PersistenceService
     {
-
         public void SaveOrUpdateGame(Game game)
         {
-
+            bool isSaved = false;
             var persitenceGame = game.ToPersistenceGame();
-
             using var context = new MinesweeperContext();
-            
-            context.Games.Add(persitenceGame);
-            context.SaveChanges();
+            //var query = context.Games.Where< g. => g.ID >;
+
+            //using var context = new MinesweeperContext();
+
+            //context.Games.Add(persitenceGame);
+            //isSaved = true;
+            //context.SaveChanges();
+
+            if (persitenceGame.ID == 0)
+            {
+                context.Games.Add(persitenceGame);
+            }
+            else
+            {
+                context.Games.Update(persitenceGame);
+            }
+
+
+
+            if (isSaved == true)
+            {
+            //context.Games.Update(persitenceGame);
+            //isSaved = true;
+            }
+               
+                context.SaveChanges();
+           
         }
 
         public List<PersistenceGame> LoadGames()
         {
             using var context = new MinesweeperContext();
-            var query = context.Games.OrderByDescending(g => g.LastPlayedOn);
+            var query = context.Games
+                .OrderByDescending(g => g.LastPlayedOn);
 
             return query.ToList();
-
         }
-
       
         public Game RestoreGame(int id)
         {
