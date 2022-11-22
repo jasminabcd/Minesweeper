@@ -63,17 +63,24 @@
 
             persistenceGame.ID = _id;
 
+
+            if (IsWon())
+            {
+                persistenceGame.GameState = GameState.Won;
+            }
+            else if (IsGameover)
+            {
+                persistenceGame.GameState = GameState.GameOver;
+            }
+            else
+            {
+                persistenceGame.GameState = GameState.Playing;
+            }
+
+
             return persistenceGame;
         }
 
-        public PersistenceField ToPersistenceGrid()
-        {
-            var persistenceGrid = new PersistenceGrid();
-
-            ICollection<PersistenceField> persistenceFields = _grid.GetPersistenceField();
-
-            return null;
-        }
 
         public static Game FromPersistenceGame(PersistenceGame persistenceGame)
         {

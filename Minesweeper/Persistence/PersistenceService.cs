@@ -1,6 +1,7 @@
 ﻿using efCoreTest;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection.Metadata.Ecma335;
+using GameState = Minesweeper.Migrations.GameState;
 
 namespace Minesweeper.Persistence
 {
@@ -30,13 +31,17 @@ namespace Minesweeper.Persistence
 
 
 
-            if (isSaved == true)
+            if (isSaved)
             {
-            //context.Games.Update(persitenceGame);
+            context.Games.Update(persitenceGame);
+            context.SaveChanges();
+
             //isSaved = true;
             }
-               
-                context.SaveChanges();
+
+            var gameState = new GetGameState();
+
+            context.SaveChanges();
            
         }
 
@@ -44,7 +49,7 @@ namespace Minesweeper.Persistence
         {
             using var context = new MinesweeperContext();
             var query = context.Games
-                .OrderByDescending(g => g.LastPlayedOn);
+                .OrderBy(u => u.ID);
 
             return query.ToList();
         }

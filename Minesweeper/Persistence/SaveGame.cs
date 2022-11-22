@@ -4,6 +4,9 @@ using Minesweeper;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks.Dataflow;
+using Microsoft.Identity.Client;
+using Microsoft.IdentityModel.Tokens;
 
 public class PersistenceGame
 {
@@ -17,10 +20,36 @@ public class PersistenceGame
     public string Difficulty { get; set; }
 
     public DateTime LastPlayedOn { get; set; }
-    
+    public GameState GameState { get; set; }
+
     public ICollection<PersistenceField> Fields { get; set; } = new List<PersistenceField>();
 
 }
+
+public enum GameState
+{
+    Won = 0, 
+    GameOver = 1, 
+    Playing = 2
+}
+
+
+
+
+public class GetGameState
+{
+    public GameState gameState { get; set; }
+
+    public void SetGameState(GameState valueGameState)
+    {
+        gameState = valueGameState;
+    }
+    public GetGameState()
+    {
+        return;
+    }
+}
+
 
 public class PersistenceField
 {
@@ -34,16 +63,5 @@ public class PersistenceField
     public bool IsFlag { get; set; }
     public int BombsAroundMe { get; set; }
     public int Position { get; set; }
-
-}
-
-
-public class PersistenceGrid
-{
-
-    public Field Field { get; set; }
-
-    //private int _persistenceDiscoveredFieldCount = 0;
-    //private int _persistenceFlagFieldCount = 0;
 
 }

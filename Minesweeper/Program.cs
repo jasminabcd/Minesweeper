@@ -7,6 +7,7 @@ using Personen;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection.Metadata.Ecma335;
+using System.Runtime.Serialization;
 
 string difficultyText = string.Empty;
 
@@ -147,7 +148,11 @@ Game LoadGame()
 
     ConsoleTable
         .From<RowGame>(rowGames)
-        .Write();
+
+        .Write((Format)GameState.Playing);
+
+
+
 
     Console.WriteLine("Geben Sie die ID Ihres gewünschten Spiels ein:");
 
@@ -157,10 +162,11 @@ Game LoadGame()
         int intInput;
 
         bool successed = int.TryParse(input, out intInput);
-        
+
         if (!successed)
         {
-            Console.WriteLine("Der von Ihnen eingegebene Wert ist eine ungültige ID-Nummer. Geben Sie eine gültige ID ein:");
+            Console.WriteLine(
+                "Der von Ihnen eingegebene Wert ist eine ungültige ID-Nummer. Geben Sie eine gültige ID ein:");
             continue;
         }
 
@@ -172,8 +178,8 @@ Game LoadGame()
 
         if (successed)
         {
-            var id = games[intInput].ID;
-            return persistanceService.RestoreGame(intInput);
+            var id = games[intInput - 1].ID;
+            return persistanceService.RestoreGame(id);
         }
 
     }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using efCoreTest;
 
@@ -11,9 +12,10 @@ using efCoreTest;
 namespace Minesweeper.Migrations
 {
     [DbContext(typeof(MinesweeperContext))]
-    partial class MinesweeperContextModelSnapshot : ModelSnapshot
+    [Migration("20221121100544_GameState")]
+    partial class GameState
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
